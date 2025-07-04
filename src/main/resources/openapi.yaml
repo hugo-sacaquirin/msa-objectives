@@ -1,0 +1,195 @@
+openapi: 3.0.3
+info:
+  title: Objective Management API
+  version: '1.0.0'
+  description: API for managing institutional objectives.
+
+servers:
+  - url: http://localhost:8080/api
+
+tags:
+  - name: objectives
+    description: Endpoints for objective management
+
+paths:
+  /objectives:
+    post:
+      tags:
+        - objectives
+      summary: Register a new objective
+      operationId: createObjective
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectiveRequest'
+      responses:
+        '201':
+          description: Objective successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectiveResultResponse'
+        '400':
+          description: Invalid data
+        '409':
+          description: Duplicate objective
+
+  /objectives/paged:
+    get:
+      tags:
+        - objectives
+      summary: Get paged objectives (with filters)
+      operationId: getPagedObjectives
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - name: name
+          in: query
+          schema: { type: string }
+        - name: typeObjective
+          in: query
+          schema: { type: string }
+        - name: code
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Paged objectives list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectivePagedResponse'
+
+  /objectives/search:
+    get:
+      tags:
+        - objectives
+      summary: Search objectives with filters
+      operationId: searchObjectives
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - name: name
+          in: query
+          schema: { type: string }
+        - name: typeObjective
+          in: query
+          schema: { type: string }
+        - name: code
+          in: query
+          schema: { type: string }
+        - name: type
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Objectives found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectivePagedResponse'
+
+  /objectives/{id}:
+    put:
+      tags:
+        - objectives
+      summary: Update an existing objective
+      operationId: updateObjective
+      parameters:
+        - $ref: '#/components/parameters/ObjectiveId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectiveRequest'
+      responses:
+        '200':
+          description: Objective updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectiveResultResponse'
+        '400':
+          description: Invalid data
+        '404':
+          description: Objective not found
+        '409':
+          description: Duplicate objective
+
+  /objectives/{id}/deactivate:
+    delete:
+      tags:
+        - objectives
+      summary: Deactivate objective (set status to 'inactive')
+      operationId: deactivateObjective
+      parameters:
+        - $ref: '#/components/parameters/ObjectiveId'
+      responses:
+        '204':
+          description: Objective successfully deactivated
+        '404':
+          description: Objective not found
+
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Page number (starts at 0)
+      schema: { type: integer, default: 0 }
+    Size:
+      name: size
+      in: query
+      description: Number of elements per page
+      schema: { type: integer, default: 20 }
+    ObjectiveId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+      description: Objective ID
+
+  schemas:
+    ObjectiveRequest:
+      type: object
+      required: [ name, description, type, code, eje, status ]
+      properties:
+        id: { type: integer }
+        name: { type: string, minLength: 3, maxLength: 100 }
+        description: { type: string, minLength: 3, maxLength: 500 }
+        type: { type: string, minLength: 3, maxLength: 50 }
+        code: { type: string, minLength: 3, maxLength: 50 }
+        eje: { type: string, minLength: 3, maxLength: 50 }
+        status: { type: string, minLength: 3, maxLength: 50 }
+    ObjectiveResultResponse:
+      title: ObjectiveResultResponse
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code of the result when the objective is created or updated
+        result:
+          type: string
+          description: Result message when the objective is created or updated
+    ObjectiveResponse:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        description: { type: string }
+        type: { type: string }
+        code: { type: string }
+        eje: { type: string }
+        status: { type: string }
+        createdAt: { type: string}
+        updatedAt: { type: string}
+    ObjectivePagedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectiveResponse'
