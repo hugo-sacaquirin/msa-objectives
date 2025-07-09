@@ -151,7 +151,7 @@ class ObjectiveServiceImplTest {
         when(objectiveRepository.findByObjectiveType(type)).thenReturn(Collections.emptyList());
         when(objectiveMapper.toObjectiveResponseFromObjective(anyList())).thenReturn(Collections.emptyList());
 
-        ObjectivePagedResponse response = objectiveService.searchObjectives(0, 10, null, null, type, "1");
+        ObjectivePagedResponse response = objectiveService.searchObjectives(0, 10, null, type, type, "1");
 
         assertNotNull(response);
         assertTrue(response.getContent().isEmpty());

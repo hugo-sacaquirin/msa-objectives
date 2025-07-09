@@ -8,11 +8,13 @@ import com.sipeip.infrastructure.input.adapter.rest.models.ObjectiveResultRespon
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import sipeip.service.ObjectiveService;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class ObjectiveController implements ObjectivesApi {
     private final ObjectiveService objectiveService;
 

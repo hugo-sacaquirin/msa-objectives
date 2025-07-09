@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import sipeip.domain.State;
 import sipeip.domain.entity.Objective;
 import sipeip.repository.ObjectiveRepository;
 import sipeip.service.ObjectiveService;
@@ -30,7 +29,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                 .description(request.getDescription())
                 .objectiveType(request.getType())
                 .eje(request.getEje())
-                .status(State.ACTIVE.getValue())
+                .status(request.getStatus())
                 .createdAt(java.time.LocalDateTime.now())
                 .updatedAt(java.time.LocalDateTime.now())
                 .build());
@@ -49,7 +48,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
                 .description(request.getDescription())
                 .objectiveType(request.getType())
                 .eje(request.getEje())
-                .status(State.ACTIVE.getValue())
+                .status(request.getStatus())
                 .createdAt(java.time.LocalDateTime.now())
                 .updatedAt(java.time.LocalDateTime.now())
                 .build());
@@ -87,7 +86,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         if (type.equals("0")) {
             objectivePagedResponse.setContent(objectiveMapper.toObjectiveResponseFromObjective(objectiveRepository.findByName(name)));
         } else {
-            objectivePagedResponse.setContent(objectiveMapper.toObjectiveResponseFromObjective(objectiveRepository.findByObjectiveType(code)));
+            objectivePagedResponse.setContent(objectiveMapper.toObjectiveResponseFromObjective(objectiveRepository.findByObjectiveType(typeObjective)));
         }
         return objectivePagedResponse;
     }
