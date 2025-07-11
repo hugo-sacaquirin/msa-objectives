@@ -14,6 +14,7 @@ import sipeip.service.ObjectiveService;
 import sipeip.service.mapper.ObjectiveMapper;
 
 import static sipeip.util.StaticValues.CREATED;
+import static sipeip.util.StaticValues.getObjectiveResultResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -58,12 +59,7 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         return getObjectiveResultResponse("Objective updated successfully");
     }
 
-    private static ObjectiveResultResponse getObjectiveResultResponse(String message) {
-        ObjectiveResultResponse entityResultResponse = new ObjectiveResultResponse();
-        entityResultResponse.setCode(CREATED);
-        entityResultResponse.setResult(message);
-        return entityResultResponse;
-    }
+
 
     @Override
     public void deactivateObjective(Integer id) {

@@ -133,6 +133,107 @@ paths:
         '404':
           description: Objective not found
 
+  /objective-alignments:
+    post:
+      tags:
+        - objective-alignments
+      summary: Register a new objective alignment
+      operationId: createObjectiveAlignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectiveAlignmentRequest'
+      responses:
+        '201':
+          description: Objective alignment successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectiveResultResponse'
+        '400':
+          description: Invalid data
+        '409':
+          description: Duplicate alignment
+
+  /objective-alignments/paged:
+    get:
+      tags:
+        - objective-alignments
+      summary: Get paged objective alignments
+      operationId: getPagedObjectiveAlignments
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Paged list of alignments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectiveAlignmentPagedResponse'
+
+  /objective-alignments/search:
+    get:
+      tags:
+        - objective-alignments
+      summary: Search objective alignments with filters
+      operationId: searchObjectiveAlignments
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - name: strategicObjectiveName
+          in: query
+          schema: { type: string }
+        - name: pndName
+          in: query
+          schema: { type: string }
+        - name: odsName
+          in: query
+          schema: { type: string }
+        - name: entityName
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Alignments found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectiveAlignmentPagedResponse'
+
+  /objective-alignments/{id}/deactivate:
+    delete:
+      tags:
+        - objective-alignments
+      summary: Deactivate objective alignment
+      operationId: deactivateObjectiveAlignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Alignment successfully deactivated
+        '404':
+          description: Alignment not found
+
+  /objective-alignments/hierarchical:
+    get:
+      tags:
+        - objective-alignments
+      summary: Get hierarchical structure of alignments
+      operationId: getHierarchicalObjectiveAlignments
+      responses:
+        '200':
+          description: Hierarchical structure of alignments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectiveAlignmentHierarchicalResponse'
+
 components:
   parameters:
     Page:
@@ -193,3 +294,56 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObjectiveResponse'
+
+    ObjectiveAlignmentRequest:
+      type: object
+      required: [ strategicObjectiveId, pndId, odsId, entityId ]
+      properties:
+        strategicObjectiveId: { type: integer }
+        pndId: { type: integer }
+        odsId: { type: integer }
+        entityId: { type: integer }
+
+    ObjectiveAlignmentResponse:
+      type: object
+      properties:
+        id: { type: integer }
+        strategicObjective: { $ref: '#/components/schemas/ObjectiveResponse' }
+        pnd: { type: object } # Refina según tu modelo
+        ods: { type: object }
+        entity: { type: object }
+        status: { type: string }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+
+    ObjectiveAlignmentPagedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectiveAlignmentResponse'
+
+    ObjectiveAlignmentHierarchicalResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          strategicObjective: { $ref: '#/components/schemas/ObjectiveResponse' }
+          pndList:
+            type: array
+            items:
+              type: object
+              properties:
+                pnd: { type: object }
+                odsList:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ods: { type: object }
+                      entities:
+                        type: array
+                        items: { type: object }
+
+
