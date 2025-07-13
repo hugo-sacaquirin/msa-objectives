@@ -183,16 +183,13 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
-        - name: strategicObjectiveName
-          in: query
-          schema: { type: string }
-        - name: pndName
-          in: query
-          schema: { type: string }
-        - name: odsName
-          in: query
-          schema: { type: string }
         - name: entityName
+          in: query
+          schema: { type: string }
+        - name: typeObjective
+          in: query
+          schema: { type: string }
+        - name: type
           in: query
           schema: { type: string }
       responses:
@@ -308,7 +305,7 @@ components:
       type: object
       properties:
         id: { type: integer }
-        strategicObjective: { $ref: '#/components/schemas/ObjectiveResponse' }
+        strategicObjective: { type: object }
         pnd: { type: object } # Refina según tu modelo
         ods: { type: object }
         entity: { type: object }

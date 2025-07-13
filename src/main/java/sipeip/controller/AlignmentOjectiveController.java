@@ -6,6 +6,7 @@ import com.sipeip.infrastructure.input.adapter.rest.models.ObjectiveAlignmentPag
 import com.sipeip.infrastructure.input.adapter.rest.models.ObjectiveAlignmentRequest;
 import com.sipeip.infrastructure.input.adapter.rest.models.ObjectiveResultResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,8 @@ public class AlignmentOjectiveController implements ObjectiveAlignmentsApi {
 
     @Override
     public ResponseEntity<Void> deactivateObjectiveAlignment(Integer id) {
-        return null;
+        objectiveAlignmentService.deactivateAlignmentObjective(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
@@ -38,11 +40,13 @@ public class AlignmentOjectiveController implements ObjectiveAlignmentsApi {
 
     @Override
     public ResponseEntity<ObjectiveAlignmentPagedResponse> getPagedObjectiveAlignments(Integer page, Integer size) {
-        return null;
+        return new ResponseEntity<>(objectiveAlignmentService.getPagedAlignmentObjectives(page, size), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<ObjectiveAlignmentPagedResponse> searchObjectiveAlignments(Integer page, Integer size, String strategicObjectiveName, String pndName, String odsName, String entityName) {
-        return null;
+    public ResponseEntity<ObjectiveAlignmentPagedResponse> searchObjectiveAlignments(Integer page, Integer size, String entityName, String typeObjective, String type) {
+        return new ResponseEntity<>(objectiveAlignmentService.searchAlignmentObjectives(page, size, entityName, typeObjective, type), HttpStatus.OK);
     }
+
+
 }
